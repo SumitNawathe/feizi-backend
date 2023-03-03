@@ -25,5 +25,5 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./conf/sql/schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./schema.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
