@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  feizi-backend:
+    container_name: feizi-backend
+    hostname: feizi-backend
+    image: feizi-backend:latest
+    environment:
+      DB_HOST: postgresql
+      DB_PORT: 5432
+      DB_USERNAME: username
+      DB_PASSWORD: password
+    ports:
+      - '8000:8000'
+
+  postgresql:
+    hostname: postgresql
+    container_name: postgresql
+    image: postgres:14.0
+    environment:
+      - POSTGRES_DB=feizi
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./conf/sql/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
