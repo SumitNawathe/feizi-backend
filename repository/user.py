@@ -24,7 +24,7 @@ class UserRepository:
 
     def create(self, user: User) -> User:
         statement = insert(self.table).values(
-            name=user.username,
+            username=user.username,
             email=user.email,
             password=user.password
         )
