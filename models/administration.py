@@ -7,3 +7,8 @@ class User:
     email: str
     password: str
 
+@dataclass
+class UploadedImage:
+    _id: int
+    user_id: int
+    filename: str

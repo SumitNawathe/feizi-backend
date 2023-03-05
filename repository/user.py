@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import MetaData, Table, Column, String, Integer, Boolean, Float, select, update, insert
 from sqlalchemy import func
@@ -37,7 +37,7 @@ class UserRepository:
         result = self.sql_engine.execute(statement)
         return list(map(lambda r: self._from_row(r), result))
 
-    def get_by_username(self, username) -> User:
+    def get_by_username(self, username) -> Optional[User]:
         statement = select(self.table).where(self.table.c.username == username)
         result = self.sql_engine.execute(statement).first()
         if result is not None:

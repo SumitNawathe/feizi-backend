@@ -29,15 +29,8 @@ def auth(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         try:
-            LOG.info('a')
             token = request.headers.get('Authorization')
-            LOG.info('b')
-            LOG.info(token)
-            LOG.info('c')
             user = process_token(token)
-            LOG.info('d')
-            LOG.info(user.username)
-            LOG.info('e')
             if not user:
                 return make_response('', 401)
             return f(user, *args, **kwargs)
