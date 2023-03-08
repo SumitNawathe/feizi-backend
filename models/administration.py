@@ -13,3 +13,5 @@ class UploadedImage:
     user_id: int
     filename: str
     label: str
+
+

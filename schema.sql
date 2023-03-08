@@ -16,3 +16,11 @@ CREATE TABLE IF NOT EXISTS feizi.uploaded_images
     label               varchar,
     foreign key (user_id) references feizi.users(id)
 );
+
+CREATE TABLE IF NOT EXISTS feizi.segmentation
+(
+    id                  serial primary key,
+    image_id            int,
+    points              json,
+    foreign key (image_id) references feizi.uploaded_images(id)
+);

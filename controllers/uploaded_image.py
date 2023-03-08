@@ -9,6 +9,9 @@ from repository.setup_sqlalchemy import sql_engine
 from repository.uploaded_image import UploadedImageRepository
 from repository.user import UserRepository
 from utilities.authentication import create_token, auth
+import numpy as np
+import skimage
+import skimage.io
 
 
 image_repo = UploadedImageRepository(sql_engine)
@@ -21,12 +24,14 @@ IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 @auth
 def upload_image(user: User, label: str):
     try:
+        # check file and extension
         file = request.files['file']
         orig_filename = '.'.join(file.filename.split('.')[:-1])
         orig_extension = file.filename.split('.')[-1]
         if orig_extension not in IMAGE_EXTENSIONS:
             return make_response('invalid filetype', 400)
 
+        # create and save original file
         timestamp = int(time.time() * 1000)
         filename = orig_filename + "_" + str(timestamp) + "_." + orig_extension
         file.save(os.path.join(IMAGE_DIR, filename))
@@ -36,6 +41,19 @@ def upload_image(user: User, label: str):
             filename=filename,
             label=label
         ))
+
+        # create and save with gaussian blur
+        image = skimage.io.imread(os.path.join(IMAGE_DIR, filename))
+        distorted = skimage.util.random_noise(image, clip=True, var=0.1)
+        distorted_filename = orig_filename + "_" + str(timestamp) + "_distorted." + orig_extension
+        skimage.io.imsave(os.path.join(IMAGE_DIR, distorted_filename), distorted)
+        image_repo.create(UploadedImage(
+            _id=-1,
+            user_id=user._id,
+            filename=distorted_filename,
+            label=label
+        ))
+
         return make_response('', 200)
     except Exception as e:
         LOG.info('error')

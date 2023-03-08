@@ -9,3 +9,5 @@ psycopg2
 pyjwt
 pyopenssl
 flask_cors
+numpy
+scikit-image
