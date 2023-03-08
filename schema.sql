@@ -13,5 +13,6 @@ CREATE TABLE IF NOT EXISTS feizi.uploaded_images
     id                  serial primary key,
     user_id             int,
     filename            varchar not null,
+    label               varchar,
     foreign key (user_id) references feizi.users(id)
 );

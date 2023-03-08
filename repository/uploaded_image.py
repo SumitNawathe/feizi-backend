@@ -18,6 +18,7 @@ class UploadedImageRepository:
             Column('id', Integer, primary_key=True),
             Column('user_id', String, ForeignKey('user.id')),
             Column('filename', String),
+            Column('label', String),
             schema='feizi'
         )
 
@@ -25,6 +26,7 @@ class UploadedImageRepository:
         statement = insert(self.table).values(
             user_id=image.user_id,
             filename=image.filename,
+            label=image.label
         )
         result = self.sql_engine.execute(statement)
         image._id = result.inserted_primary_key[0]
@@ -40,9 +42,15 @@ class UploadedImageRepository:
         result = self.sql_engine.execute(statement)
         return list(map(lambda r: self._from_row(r), result))
 
+    def get_by_filename(self, filename: str) -> Optional[UploadedImage]:
+        statement = select(self.table).where(self.table.c.filename == filename)
+        result = self.sql_engine.execute(statement).first()
+        return self._from_row(result) if result is not None else None
+
     def _from_row(self, row: Row) -> UploadedImage:
         return UploadedImage(
             _id=row['id'],
             user_id=row['user_id'],
-            filename=row['filename']
+            filename=row['filename'],
+            label=row['label']
         )
