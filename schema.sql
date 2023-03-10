@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS feizi.uploaded_images
     foreign key (user_id) references feizi.users(id)
 );
 
-CREATE TABLE IF NOT EXISTS feizi.segmentation
+CREATE TABLE IF NOT EXISTS feizi.segmentations
 (
     id                  serial primary key,
     image_id            int,

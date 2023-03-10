@@ -1,5 +1,8 @@
 
 from dataclasses import dataclass
+from typing import List
+
+
 @dataclass
 class User:
     _id: int
@@ -14,4 +17,9 @@ class UploadedImage:
     filename: str
     label: str
 
+@dataclass
+class Segmentation:
+    _id: int
+    image_id: int
+    points: List[List[float]]
 

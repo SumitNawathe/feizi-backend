@@ -4,7 +4,8 @@ import time
 from flask import Blueprint, make_response, jsonify, request, send_file
 
 from app import LOG
-from models.administration import User, UploadedImage
+from models.administration import User, UploadedImage, Segmentation
+from repository.segmentation import SegmentationRepository
 from repository.setup_sqlalchemy import sql_engine
 from repository.uploaded_image import UploadedImageRepository
 from repository.user import UserRepository
@@ -16,6 +17,7 @@ import skimage.io
 
 image_repo = UploadedImageRepository(sql_engine)
 image_routes = Blueprint( 'image', __name__ )
+segmentation_repo = SegmentationRepository(sql_engine)
 
 IMAGE_DIR = "/backend/images"
 IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -83,6 +85,26 @@ def get_label_by_name(user: User, filename: str):
         if image.user_id != user._id:
             return make_response('', 401)
         return jsonify({'label': image.label})
+    except Exception as e:
+        return make_response('', 500)
+
+@image_routes.route("/images/segmentation/<filename>", methods=['POST'])
+@auth
+def store_segmentation(user: User, filename: str):
+    try:
+        image = image_repo.get_by_filename(filename)
+        if image is None:
+            return make_response('', 404)
+        if image.user_id != user._id:
+            return make_response('', 401)
+
+        data = request.get_json(force=True)
+        segmentation_repo.create(Segmentation(
+            _id=-1,
+            image_id=image._id,
+            points=data
+        ))
+        return make_response('', 200)
     except Exception as e:
         return make_response('', 500)
 
