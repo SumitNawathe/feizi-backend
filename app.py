@@ -25,5 +25,4 @@ app.register_blueprint(image_routes)
 
 @app.route("/healthz")
 def health():
-    passwd = os.environ['DB_PASSWORD']
-    return jsonify({'status': 'healthy', 'password': passwd})
+    return jsonify({'status': 'healthy'})
